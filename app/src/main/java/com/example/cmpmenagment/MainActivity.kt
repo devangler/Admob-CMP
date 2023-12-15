@@ -1,6 +1,8 @@
 package com.example.cmpmenagment
 
+import android.content.Intent
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.ump.ConsentDebugSettings
@@ -36,6 +38,7 @@ class MainActivity : AppCompatActivity() {
                 // Consent has been gathered.
                 if (consentInformation.canRequestAds()) {
                     // initializeMobileAdsSdk()
+                    startTimer()
                     loadAds()
                 }
             }
@@ -56,6 +59,7 @@ class MainActivity : AppCompatActivity() {
         // the previous session can be used to request ads.
         if (consentInformation.canRequestAds()) {
             //  initializeMobileAdsSdk()
+            startTimer()
             loadAds()
 
         }
@@ -77,5 +81,23 @@ class MainActivity : AppCompatActivity() {
             this,
             getString(R.string.splash_interstitial)
         )
+    }
+
+    private fun startTimer() {
+        val timer = object : CountDownTimer(8000, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                val secondsRemaining = millisUntilFinished / 1000
+                println("Seconds remaining: $secondsRemaining")
+            }
+
+            override fun onFinish() {
+                val intent = Intent(this@MainActivity, NextActivity::class.java)
+                startActivity(intent)
+                finish()
+                HyperSoftInterstitialHelper.showAdmobInterstitial(this@MainActivity)
+            }
+        }
+
+        timer.start()
     }
 }
